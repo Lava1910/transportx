@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useReducer, useState } from 'react'; 
+import { Routes,Route,BrowserRouter } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from './pages/Login';
+import INIT_STATE from './store/initState';
+import  { UserProvider } from './store/context';
+import reducer from './store/reducer';
+import TaoDon from './pages/Taodon';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const localState = localStorage.getItem("state")?JSON.parse(localStorage.getItem("state")):INIT_STATE;
+    const [state,dispatch] = useReducer(reducer,localState);
+    return(
+        <UserProvider value={{state,dispatch}}>
+            <div className="App">
+                <BrowserRouter>
+                    <Routes>
+                        <Route path='/' element={<Home/>}/>
+                        <Route path='/TaoDon' element={<TaoDon/>}/>
+                        <Route path='/auth/Login' element={<Login/>}/>
+                    </Routes>
+                </BrowserRouter>
+            </div>
+        </UserProvider>
+    );
 }
 
 export default App;
