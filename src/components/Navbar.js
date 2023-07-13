@@ -12,10 +12,10 @@ function Navbar(){
             <div style={{paddingRight: '100px'}} className="collapse navbar-collapse" id="navbarNav">
                 <ul className="navbar-nav ml-auto">
                     <li style={{paddingLeft: '60px'}} className="nav-item active">
-                        <NavLink className={({isActive})=>isActive?"nav-link page-active":"nav-link"} href="#">Trang chủ</NavLink>
+                        <NavLink className={({isActive})=>isActive?"nav-link page-active":"nav-link"} to="/">Trang chủ</NavLink>
                     </li>
                     <li style={{paddingLeft: '60px'}} className="nav-item">
-                        <NavLink className={({isActive})=>isActive?"nav-link page-active":"nav-link"} href="TaoDon.html">Tạo đơn</NavLink>
+                        <NavLink className={({isActive})=>isActive?"nav-link page-active":"nav-link"} to="/taodon">Tạo đơn</NavLink>
                     </li>
                     <li style={{paddingLeft: '60px'}} className="nav-item">
                         <NavLink className={({isActive})=>isActive?"nav-link page-active":"nav-link"} href="#">Tin tức</NavLink>

@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from 'react'; 
-import { Routes,Route,BrowserRouter } from "react-router-dom";
+import { Routes,Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from './pages/Login';
 import INIT_STATE from './store/initState';
@@ -13,13 +13,11 @@ function App() {
     return(
         <UserProvider value={{state,dispatch}}>
             <div className="App">
-                <BrowserRouter>
                     <Routes>
                         <Route path='/' element={<Home/>}/>
-                        <Route path='/TaoDon' element={<TaoDon/>}/>
+                        <Route path='/taodon' element={<TaoDon/>}/>
                         <Route path='/auth/Login' element={<Login/>}/>
                     </Routes>
-                </BrowserRouter>
             </div>
         </UserProvider>
     );

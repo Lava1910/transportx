@@ -1,8 +1,23 @@
 import axios from "axios";
 
-const LOCALTION_URL = "https://provinces.open-api.vn/api/?depth=3";
+const BASE_URL = "https://provinces.open-api.vn/api/";
 const location_api = axios.create({
-    localtionURL:LOCALTION_URL
+    baseURL:BASE_URL
 });
 
-export default location_api;
+export const find = async (id)=>{
+    const url = location_api;
+    try {
+        const rs = await url.get('?depth=3');
+        console.log(rs)
+       // const token = rs.data.token;
+        return rs.data;
+    } catch (error) {
+        return {};
+    }
+}
+
+
+
+
+

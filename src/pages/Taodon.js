@@ -1,23 +1,62 @@
 import React, { useState,useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { find } from "../services/province.service";
+import { find } from "../services/localtion.service";
 import "../assets/css/pagecss.css";
 import banner from "../assets/imgs/banner.png";
 import giaohang from "../assets/imgs/Giao hàng.png";
 import cam from "../assets/imgs/cam.png";
+import getGood from "../services/goods.service";
+import getWeight from "../services/weight.service";
+import getInsurance from "../services/insurance.service";
 
 
 function TaoDon(prop) {
-    const [province,setProvince] = useState({});
-    const {id} = useParams();
+    const [province,setProvince] = useState([]);
+    const [selectedProvinceOption, setSelectedProvinceOption] = useState([]);
+    const [selectedDistrictOption, setSelectedDistrictOption] = useState([]);
+    const [good,setGood] = useState([]);
+    const [weight,setWeight] = useState([]);
+    const [insurance,setInsurance] = useState([]);
     const findProvince = async ()=>{
-        const p = await find("name");
-        setProvince(p);
+      const p = await find("name");
+      setProvince(p);
     }
     useEffect(()=>{
         findProvince();
     },[]);
-    console.log(province);
+    const handleSelectProvince = (event) => {
+      const selectedValue = event.target.value;
+      const foundProvince = province.find(e => e.name === selectedValue);
+      const d = foundProvince.districts;
+      setSelectedProvinceOption(d);
+    };
+    const handleSelectDistrict = (event) => {
+      const selectedValue = event.target.value;
+      const foundDistrict = selectedProvinceOption.find(e => e.name === selectedValue);
+      const w = foundDistrict.wards;
+      setSelectedDistrictOption(w);
+    };
+    const getGoods = async ()=>{
+      const goods = await getGood();
+      setGood(goods);
+    }
+    useEffect(()=>{
+      getGoods();
+    },[])
+    const getWeights = async ()=>{
+      const weight = await getWeight();
+      setWeight(weight);
+    }
+    useEffect(()=>{
+      getWeights();
+    },[])
+    const getInsurances = async ()=>{
+      const insurance = await getInsurance();
+      setInsurance(insurance);
+    }
+    useEffect(()=>{
+      getInsurances();
+    },[])
+
     return(
         <section>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark" >
@@ -78,26 +117,33 @@ function TaoDon(prop) {
                   </div>
                 </div>
                 {/* <div className="form-row"> */}
-                    <div className="form-group col-md-4">
-                        <label for="inputState">Tỉnh/Thành phố</label>
-                        <select id="inputState" className="form-control">
-                          <option selected>{province.Name}</option>
-                        </select>
-                      </div>
+                  <div className="form-group col-md-4">
+                      <label for="inputState">Tỉnh/Thành phố</label>
+                      <select id="inputState" onChange={handleSelectProvince} className="form-control">
+                        <option>Thành phố...</option>
+                        {
+                          province?.map(item => <option>{item.name}</option>)
+                        }
+                      </select>
+                    </div>
 
                   <div className="form-group col-md-4">
                     <label for="inputState">Quận/Huyện</label>
-                    <select id="inputState" className="form-control">
-                      <option selected>Ba Đình</option>
-                      <option>...</option>
+                    <select id="inputState" onChange={handleSelectDistrict} className="form-control">
+                    <option>Quận Huyện...</option>
+                      {
+                        selectedProvinceOption?.map(item  => <option>{item.name}</option>)
+                      }
                     </select>
                   </div>
                   
                   <div className="form-group col-md-4">
                     <label for="inputState">Phường/Xã</label>
                     <select id="inputState" className="form-control">
-                      <option selected>Kim Mã</option>
-                      <option>...</option>
+                    <option>Phường Xã...</option>
+                      {
+                        selectedDistrictOption?.map(item  => <option>{item.name}</option>)
+                      }
                     </select>
                   </div>
                   <div className="form-group col-md-12">
@@ -105,32 +151,25 @@ function TaoDon(prop) {
                     </div>
                     <div className="form-group col-md-6">
                         <select id="inputState" className="form-control">
-                            <option selected>Loại hàng hoá</option>
-                            <option>Thực phẩm</option>
-                            <option>Quần áo</option>
-                            <option>Điện tử</option>
-                            <option>Dễ vỡ</option>
-                            <option>Khác</option>
+                            {
+                              good?.map(item  => <option>{item.goodsName}</option>)
+                            }
                         </select>
                     </div>
                     <div className="form-group col-md-6">
                         <select id="inputState" className="form-control">
                             <option selected>Trọng lượng</option>
-                            <option>Loại 1: Dưới 5kg</option>
-                            <option>Loại 2: Từ 5kg đến 30kg</option>
-                            <option>Loại 3: Từ 30kg đến 100kg</option>
-                            <option>Loại 4: Trên 100kg</option>
+                            {
+                              weight?.map(item  => <option>{item.weightName}</option>)
+                            }
                         </select>
                     </div>
                     <div className="form-group col-md-6">
                       <select id="inputState" className="form-control">
                           <option selected>Giá trị đơn hàng</option>
-                          <option>Dưới 500.000</option>
-                          <option>Từ 500.000 - 3.000.000</option>
-                          <option>Từ 3.000.000 - 10.000.000</option>
-                          <option>Từ 10.000.000 - 50.000.000</option>
-                          <option>Từ 50.000.000 - 100.000.000</option>
-                          <option>Trên 100.000.000</option>
+                          {
+                              insurance?.map(item  => <option>{item.insuranceName}</option>)
+                            }
                       </select>
                   </div>
                   <div className="form-group col-md-6">
@@ -151,23 +190,29 @@ function TaoDon(prop) {
                     <div className="form-row">
                         <div className="form-group col-md-4">
                             <label for="inputState">Tỉnh/Thành phố</label>
-                            <select id="inputState" className="form-control">
-                              <option selected>Tp. Hà Nội</option>
-                              <option>Tp. HCM</option>
+                            <select id="inputState" onChange={handleSelectProvince} className="form-control">
+                              <option>Thành phố...</option>
+                              {
+                                province?.map(item => <option>{item.name}</option>)
+                              }
                             </select>
                           </div>
                       <div className="form-group col-md-4">
                         <label for="inputState">Quận/Huyện</label>
-                        <select id="inputState" className="form-control">
-                          <option selected>Ba Đình</option>
-                          <option>...</option>
+                        <select id="inputState" onChange={handleSelectDistrict} className="form-control">
+                          <option>Quận Huyện...</option>
+                          {
+                            selectedProvinceOption?.map(item  => <option>{item.name}</option>)
+                          }
                         </select>
                       </div>
                       <div className="form-group col-md-4">
                         <label for="inputState">Phường</label>
                         <select id="inputState" className="form-control">
-                          <option selected>Kim Mã</option>
-                          <option>...</option>
+                          <option>Phường Xã...</option>
+                          {
+                            selectedDistrictOption?.map(item  => <option>{item.name}</option>)
+                          }
                         </select>
                       </div>
                       <div className="form-group col-md-12">
