@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from "react";
-import { find } from "../services/localtion.service";
+import { getProvince,getDistrict,getWard } from "../services/localtion.service";
 import "../assets/css/pagecss.css";
 import banner from "../assets/imgs/banner.png";
 import giaohang from "../assets/imgs/Giao hàng.png";
@@ -7,33 +7,36 @@ import cam from "../assets/imgs/cam.png";
 import getGood from "../services/goods.service";
 import getWeight from "../services/weight.service";
 import getInsurance from "../services/insurance.service";
+import Sidebar from "../components/Sidebar";
 
 
 function TaoDon(prop) {
     const [province,setProvince] = useState([]);
-    const [selectedProvinceOption, setSelectedProvinceOption] = useState([]);
-    const [selectedDistrictOption, setSelectedDistrictOption] = useState([]);
+    const [district, setDistrict] = useState([]);
+    const [wards, setWard] = useState([]);
     const [good,setGood] = useState([]);
     const [weight,setWeight] = useState([]);
     const [insurance,setInsurance] = useState([]);
     const findProvince = async ()=>{
-      const p = await find("name");
-      setProvince(p);
+      const provinces = await getProvince();
+      setProvince(provinces);
     }
     useEffect(()=>{
         findProvince();
     },[]);
-    const handleSelectProvince = (event) => {
+    const handleSelectProvince = async (event) => {
       const selectedValue = event.target.value;
-      const foundProvince = province.find(e => e.name === selectedValue);
-      const d = foundProvince.districts;
-      setSelectedProvinceOption(d);
+      const foundProvince = province.find(e => e.provinceName === selectedValue);
+      const districts = await getDistrict(foundProvince.provinceId);
+      setDistrict(districts);
+      console.log(districts);
     };
-    const handleSelectDistrict = (event) => {
+    const handleSelectDistrict = async (event) => {
       const selectedValue = event.target.value;
-      const foundDistrict = selectedProvinceOption.find(e => e.name === selectedValue);
-      const w = foundDistrict.wards;
-      setSelectedDistrictOption(w);
+      const foundDistrict = district.find(e => e.districtName === selectedValue);
+      const wards = await getWard(foundDistrict.districtId);
+      setWard(wards);
+
     };
     const getGoods = async ()=>{
       const goods = await getGood();
@@ -122,7 +125,7 @@ function TaoDon(prop) {
                       <select id="inputState" onChange={handleSelectProvince} className="form-control">
                         <option>Thành phố...</option>
                         {
-                          province?.map(item => <option>{item.name}</option>)
+                          province?.map(item => <option>{item.provinceName}</option>)
                         }
                       </select>
                     </div>
@@ -132,7 +135,7 @@ function TaoDon(prop) {
                     <select id="inputState" onChange={handleSelectDistrict} className="form-control">
                     <option>Quận Huyện...</option>
                       {
-                        selectedProvinceOption?.map(item  => <option>{item.name}</option>)
+                        district?.map(item  => <option>{item.districtName}</option>)
                       }
                     </select>
                   </div>
@@ -142,7 +145,7 @@ function TaoDon(prop) {
                     <select id="inputState" className="form-control">
                     <option>Phường Xã...</option>
                       {
-                        selectedDistrictOption?.map(item  => <option>{item.name}</option>)
+                        wards?.map(item  => <option>{item.wardName}</option>)
                       }
                     </select>
                   </div>
@@ -193,7 +196,7 @@ function TaoDon(prop) {
                             <select id="inputState" onChange={handleSelectProvince} className="form-control">
                               <option>Thành phố...</option>
                               {
-                                province?.map(item => <option>{item.name}</option>)
+                                province?.map(item => <option>{item.provinceName}</option>)
                               }
                             </select>
                           </div>
@@ -202,7 +205,7 @@ function TaoDon(prop) {
                         <select id="inputState" onChange={handleSelectDistrict} className="form-control">
                           <option>Quận Huyện...</option>
                           {
-                            selectedProvinceOption?.map(item  => <option>{item.name}</option>)
+                            district?.map(item  => <option>{item.districtName}</option>)
                           }
                         </select>
                       </div>
@@ -211,7 +214,7 @@ function TaoDon(prop) {
                         <select id="inputState" className="form-control">
                           <option>Phường Xã...</option>
                           {
-                            selectedDistrictOption?.map(item  => <option>{item.name}</option>)
+                            wards?.map(item  => <option>{item.wardName}</option>)
                           }
                         </select>
                       </div>

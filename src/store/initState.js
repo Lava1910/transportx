@@ -1,5 +1,5 @@
 const INIT_STATE = {
-    isLoading:false,
-    token:null
+    user: [],
+    isLoading:false
 }
 export default INIT_STATE;
